@@ -2,7 +2,7 @@
 
 set -eE
 
-if [[ "${DEBUG}" -eq "true" ]]; then
+if [ "$DEBUG" -eq "true" ]; then
     set -x
 fi
 
