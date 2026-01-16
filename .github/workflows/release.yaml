@@ -1,5 +1,5 @@
 ---
-name: "Release Mirror Action"
+name: "Release"
 
 on:
   release:
@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   release:
-    name: "Release Mirror Action"
+    name: "Release"
     runs-on: ubuntu-latest
     permissions:
       # write permission is required to create a github release
