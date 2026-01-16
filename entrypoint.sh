@@ -26,10 +26,9 @@ if [ "$HAS_CHECKED_OUT" != "true" ]; then
     echo >&2 "WARNING: repo not checked out; attempting checkout"
     echo >&2 "WARNING: this may result in missing commits in the remote mirror"
     echo >&2 "WARNING: this behavior is deprecated and will be removed in a future release"
-    if [ "$SRC_REPO" = "" ]; then
+    if [ -z "$SRC_REPO" ]; then
         SRC_REPO="https://github.com/$GITHUB_REPOSITORY.git"
-        echo >&2 "WARNING: SRC_REPO env variable not defined"
-        echo >&2 "Assuming source repo is $SRC_REPO"
+        echo >&2 "WARNING: SRC_REPO env variable not defined. Assuming source repo is $SRC_REPO"
     fi
     git init 1> /dev/null
     git remote add origin "$SRC_REPO"
@@ -38,32 +37,33 @@ fi
 
 git config --global credential.username "$GIT_USERNAME"
 
-if [ "$GIT_SSH_PRIVATE_KEY" != "" ]; then
+if [ -n "$GIT_SSH_PRIVATE_KEY" ]; then
     mkdir -p "$HOME/.ssh"
     chmod 700 "$HOME/.ssh"
     echo "$GIT_SSH_PRIVATE_KEY" > "$HOME/.ssh/id_rsa"
 
-    if [ "$GIT_SSH_PUBLIC_KEY" != "" ]; then
+    if [ -n "$GIT_SSH_PUBLIC_KEY" ]; then
         echo "$GIT_SSH_PUBLIC_KEY" > "$HOME/.ssh/id_rsa.pub"
         chmod 600 "$HOME/.ssh/id_rsa.pub"
     fi
-
     chmod 600 "$HOME/.ssh/id_rsa"
 
-    if [ "$GIT_SSH_KNOWN_HOSTS" != "" ]; then
+    if [ -n "$GIT_SSH_KNOWN_HOSTS" ]; then
+        # Known hosts are provided.
         echo "$GIT_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
         git config --global core.sshCommand "ssh -i $HOME/.ssh/id_rsa -o IdentitiesOnly=yes -o UserKnownHostsFile=$HOME/.ssh/known_hosts"
-    fi
-
-    if [ "$GIT_SSH_NO_VERIFY_HOST" != "true" ]; then
+    elif [ "$GIT_SSH_NO_VERIFY_HOST" = "true" ]; then
+        # No host was provided, but validation is allowed to be ignored.
+        git config --global core.sshCommand "ssh -i $HOME/.ssh/id_rsa -o IdentitiesOnly=yes -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    else
+        # Neither a host is provided nor is it allowed to be omitted.
         echo >&2 "WARNING: no known_hosts set and host verification is enabled (the default)"
         echo >&2 "WARNING: this job will fail due to host verification issues"
         echo >&2 "Please either provide the GIT_SSH_KNOWN_HOSTS or GIT_SSH_NO_VERIFY_HOST inputs"
         exit 1
-    else
-        git config --global core.sshCommand "ssh -i $HOME/.ssh/id_rsa -o IdentitiesOnly=yes -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
     fi
 else
+    # HTTPS mode
     git config --global core.askPass /cred-helper.sh
     git config --global credential.helper cache
 fi
@@ -71,12 +71,14 @@ fi
 git remote add "$REMOTE_NAME" "$REMOTE"
 
 if [ "$INPUT_PUSH_ALL_REFS" != "false" ]; then
+    # Push all Refs
     eval git push "$GIT_PUSH_ARGS" "$REMOTE_NAME" "\"refs/remotes/origin/*:refs/heads/*\""
-fi
-
-if [ "$HAS_CHECKED_OUT" != "true" ]; then
-    echo >&2 "FATAL: You must upgrade to using actions inputs instead of args: to push a single branch"
-    exit 1
 else
-    eval git push -u "$GIT_PUSH_ARGS" "$REMOTE_NAME" "$GIT_REF"
+    # Push a single Ref
+    if [ "$HAS_CHECKED_OUT" != "true" ]; then
+        echo >&2 "FATAL: You must upgrade to using actions inputs instead of args: to push a single branch"
+        exit 1
+    else
+        eval git push -u "$GIT_PUSH_ARGS" "$REMOTE_NAME" "$GIT_REF"
+    fi
 fi
