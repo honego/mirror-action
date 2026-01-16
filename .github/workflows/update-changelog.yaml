@@ -1,0 +1,43 @@
+---
+name: "Update Changelog"
+
+on:
+  release:
+    types: [released]
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    name: "Update Changelog"
+    runs-on: ubuntu-latest
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # updated CHANGELOG back to the repository.
+      # https://github.blog/changelog/2023-02-02-github-actions-updating-the-default-github_token-permissions-to-read-only/
+      contents: write
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v6
+
+      - name: "Update Changelog"
+        uses: stefanzweifel/changelog-updater-action@v1
+        with:
+          release-notes: ${{ github.event.release.body }}
+          latest-version: ${{ github.event.release.name }}
+
+      - name: "Upload commit to repository"
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "docs: update CHANGELOG by github actions"
+          commit_options: "--signoff --no-verify"
+          file_pattern: CHANGELOG.md
+          commit_user_name: github-actions[bot]
+          commit_user_email: 41898282+github-actions[bot]@users.noreply.github.com
+          commit_author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
