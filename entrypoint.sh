@@ -76,9 +76,7 @@ if [ "$INPUT_PUSH_ALL_REFS" != "false" ]; then
     eval git push "$GIT_PUSH_ARGS" "$REMOTE_NAME" "\"refs/remotes/origin/*:refs/heads/*\""
 else
     if [ "$HAS_CHECKED_OUT" != "true" ]; then
-        tee >&2 <<- 'EOF'
-        echo "FATAL: You must upgrade to using actions inputs instead of args: to push a single branch"
-EOF
+        echo >&2 "FATAL: You must upgrade to using actions inputs instead of args: to push a single branch"
         exit 1
     else
         eval git push -u "$GIT_PUSH_ARGS" "$REMOTE_NAME" "$GIT_REF"
