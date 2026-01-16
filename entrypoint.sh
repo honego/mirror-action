@@ -41,12 +41,12 @@ if [ -n "$GIT_SSH_PRIVATE_KEY" ]; then
     mkdir -p "$HOME/.ssh"
     chmod 700 "$HOME/.ssh"
     echo "$GIT_SSH_PRIVATE_KEY" > "$HOME/.ssh/id_rsa"
+    chmod 600 "$HOME/.ssh/id_rsa"
 
     if [ -n "$GIT_SSH_PUBLIC_KEY" ]; then
         echo "$GIT_SSH_PUBLIC_KEY" > "$HOME/.ssh/id_rsa.pub"
         chmod 600 "$HOME/.ssh/id_rsa.pub"
     fi
-    chmod 600 "$HOME/.ssh/id_rsa"
 
     if [ -n "$GIT_SSH_KNOWN_HOSTS" ]; then
         # Known hosts are provided.
