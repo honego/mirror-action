@@ -1,5 +1,5 @@
 {
-  "template": "#{{CHANGELOG}}\n\n<details>\n<summary>Other Changes</summary>\n\n#{{UNCATEGORIZED}}\n</details>\n\n## 🤝 Contributors\n- #{{CONTRIBUTORS}}",
+  "template": "#{{CHANGELOG}}\n\n<details>\n<summary>📦 Uncategorized & Raw Changes</summary>\n\n#{{UNCATEGORIZED}}\n</details>\n\n## 🤝 Contributors\n- #{{CONTRIBUTORS}}",
   "categories": [
     {
       "title": "## 🚀 Features",
@@ -37,6 +37,10 @@
       "title": "## 🧹 Maintenance",
       "labels": ["chore"],
       "exclude_labels": ["deps", "dependencies"]
+    },
+    {
+      "title": "## 💬 Other",
+      "labels": ["other", "misc", "revert"]
     }
   ],
   "label_extractor": [
@@ -45,7 +49,7 @@
       "target": "$1"
     },
     {
-      "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|deps){1}(\\([\\w\\-\\.]+\\))?(!)?: ([\\w ])+([\\s\\S]*)",
+      "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|deps|other|misc){1}(\\([\\w\\-\\.]+\\))?(!)?: ([\\w ])+([\\s\\S]*)",
       "target": "$1"
     }
   ],
