@@ -1,6 +1,6 @@
-# mirror-action
+# git-mirror-action
 
-A GitHub Action for mirroring your commits to a different remote repository
+A GitHub Action for mirroring your repository to a different remote repository.
 
 ## Example workflows
 
@@ -9,17 +9,30 @@ A GitHub Action for mirroring your commits to a different remote repository
 For example, this project uses the following workflow to mirror from GitHub to GitLab
 
 ```yaml
-on: [push]
-  ...
-      steps:
-        - uses: actions/checkout@v3
-          with:
-            fetch-depth: 0
-        - uses: yesolutions/mirror-action@master
-          with:
-            REMOTE: 'https://gitlab.com/spyoungtech/mirror-action.git'
-            GIT_USERNAME: spyoungtech
-            GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
+name: "GitHub Actions Mirror"
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  mirror2gitlab:
+    name: "Mirror to gitlab"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: "Mirror to gitlab"
+        uses: honeok/git-mirror-action@v1
+        with:
+          REMOTE: "https://gitlab.com/${{ github.repository }}.git"
+          GIT_USERNAME: ${{ github.repository_owner }}
+          GIT_PASSWORD: ${{ secrets.GITLAB_PASSWORD }}
 ```
 
 Be sure to set the `GIT_PASSWORD` secret in your repo secrets settings.
@@ -39,15 +52,30 @@ Requires version 0.4.0+
 Pretty much the same, but using `GIT_SSH_PRIVATE_KEY` and `GIT_SSH_KNOWN_HOSTS`
 
 ```yaml
-steps:
-  - uses: actions/checkout@v3
-    with:
-      fetch-depth: 0
-  - uses: yesolutions/mirror-action@master
-    with:
-      REMOTE: "ssh://git@gitlab.com/spyoungtech/mirror-action.git"
-      GIT_SSH_PRIVATE_KEY: ${{ secrets.GIT_SSH_PRIVATE_KEY }}
-      GIT_SSH_KNOWN_HOSTS: ${{ secrets.GIT_SSH_KNOWN_HOSTS }}
+name: "GitHub Actions Mirror"
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  mirror2gitlab:
+    name: "Mirror to gitlab"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: "Mirror to gitlab"
+        uses: honeok/git-mirror-action@v1
+        with:
+          REMOTE: "ssh://git@gitlab.com/${{ github.repository }}.git"
+          GIT_SSH_PRIVATE_KEY: ${{ secrets.GIT_SSH_PRIVATE_KEY }}
+          GIT_SSH_KNOWN_HOSTS: ${{ secrets.GIT_SSH_KNOWN_HOSTS }}
 ```
 
 `GIT_SSH_KNOWN_HOSTS` is expected to be the contents of a `known_hosts` file.
@@ -58,15 +86,30 @@ Be sure you set the secrets in your repo secrets settings!
 you can do so by using the `GIT_SSH_NO_VERIFY_HOST` input option. e.g.
 
 ```yaml
-steps:
-  - uses: actions/checkout@v3
-    with:
-      fetch-depth: 0
-  - uses: yesolutions/mirror-action@master
-    with:
-      REMOTE: git@gitlab.com/spyoungtech/mirror-action.git
-      GIT_SSH_PRIVATE_KEY: ${{ secrets.GIT_SSH_PRIVATE_KEY }}
-      GIT_SSH_NO_VERIFY_HOST: "true"
+name: "GitHub Actions Mirror"
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  mirror2gitlab:
+    name: "Mirror to gitlab"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: "Mirror to gitlab"
+        uses: honeok/git-mirror-action@v1
+        with:
+          REMOTE: git@gitlab.com:${{ github.repository }}.git
+          GIT_SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          GIT_SSH_NO_VERIFY_HOST: "true"
 ```
 
-WARNING: this setting is a compromise in security. Using known hosts is recommended.
+**WARNING**: this setting is a compromise in security. Using known hosts is recommended.
