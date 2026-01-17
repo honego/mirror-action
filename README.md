@@ -108,7 +108,7 @@ jobs:
         uses: honeok/git-mirror-action@v1
         with:
           REMOTE: git@gitlab.com:${{ github.repository }}.git
-          GIT_SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          GIT_SSH_PRIVATE_KEY: ${{ secrets.GIT_SSH_PRIVATE_KEY }}
           GIT_SSH_NO_VERIFY_HOST: "true"
 ```
 
