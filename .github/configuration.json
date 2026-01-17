@@ -1,5 +1,4 @@
 {
-  "template": "#{{CHANGELOG}}\n\n<details>\n<summary>📦 Uncategorized & Raw Changes</summary>\n\n#{{UNCATEGORIZED}}\n</details>\n\n## 🤝 Contributors\n- #{{CONTRIBUTORS}}",
   "categories": [
     {
       "title": "## 🚀 Features",
@@ -7,7 +6,7 @@
     },
     {
       "title": "## 🐛 Bug Fixes",
-      "labels": ["fix", "bug"]
+      "labels": ["fix", "bug", "fixbug"]
     },
     {
       "title": "## ⚡ Performance",
@@ -43,22 +42,15 @@
       "labels": ["other", "misc", "revert"]
     }
   ],
+  "template": "#{{CHANGELOG}}\n\n## Contributors\n- #{{CONTRIBUTORS}}",
+  "pr_template": "- #{{TITLE}}",
+  "empty_template": "- no changes",
   "label_extractor": [
     {
-      "pattern": "^chore\\((deps)\\): .*",
-      "target": "$1"
-    },
-    {
-      "pattern": "^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test|deps|other|misc){1}(\\([\\w\\-\\.]+\\))?(!)?: ([\\w ])+([\\s\\S]*)",
+      "pattern": "^(\\w+)(?:\\([\\w\\-\\.]+\\))?(!)?: .*",
       "target": "$1"
     }
   ],
-  "sort": {
-    "order": "ASC",
-    "on_property": "mergedAt"
-  },
-  "pr_template": "- #{{TITLE}}",
-  "empty_template": "- no changes",
   "max_pull_requests": 1000,
   "max_back_track_time_days": 1000
 }
