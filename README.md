@@ -1,5 +1,9 @@
 # git-mirror-action
 
+[![Build Status](https://img.shields.io/github/actions/workflow/status/honego/git-mirror-action/build.yaml?branch=master&logo=github)](https://github.com/honego/git-mirror-action)
+[![GitHub Release](https://img.shields.io/github/release/honego/git-mirror-action.svg?logo=github)](https://github.com/honego/git-mirror-action/releases/latest)
+[![GitHub License](https://img.shields.io/github/license/honeok/git-mirror-action.svg?logo=github)](https://github.com/honeok/git-mirror-action)
+
 A GitHub Action for mirroring your repository to a different remote repository.
 
 ## Example workflows
