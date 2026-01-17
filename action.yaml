@@ -46,6 +46,10 @@ inputs:
     description: 'set to "true" to enable debug mode'
     default: "false"
     required: false
+  DRY_RUN:
+    description: 'set to "true" to enable dry run mode'
+    default: "false"
+    required: false
 
 runs:
   using: "docker"

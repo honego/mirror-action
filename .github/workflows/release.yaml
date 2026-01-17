@@ -28,6 +28,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: "Try running mirror action"
+        uses: ./
+        with:
+          REMOTE: git@gitgud.io:${{ github.repository }}.git
+          GIT_SSH_PRIVATE_KEY: ${{ secrets.SYNC_PRIVATE_KEY }}
+          PUSH_ALL_REFS: false
+          GIT_SSH_NO_VERIFY_HOST: true
+          DEBUG: "true"
+          DRY_RUN: "true"
+
       - name: "Build Changelog"
         if: startsWith(github.ref, 'refs/tags/')
         uses: mikepenz/release-changelog-builder-action@v6

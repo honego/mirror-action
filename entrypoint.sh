@@ -4,6 +4,7 @@
 set -eE
 
 if [ "$DEBUG" = "true" ]; then
+    env
     set -x
 fi
 
@@ -21,6 +22,13 @@ GIT_PUSH_ARGS="${INPUT_GIT_PUSH_ARGS:-"--tags --force --prune"}"
 GIT_SSH_NO_VERIFY_HOST="$INPUT_GIT_SSH_NO_VERIFY_HOST"
 GIT_SSH_KNOWN_HOSTS="$INPUT_GIT_SSH_KNOWN_HOSTS"
 HAS_CHECKED_OUT="$(git rev-parse --is-inside-work-tree 2> /dev/null || true)"
+DRY_RUN="$INPUT_DRY_RUN"
+
+if [ "$DRY_RUN" = "true" ]; then
+    echo >&2 "DEBUG: DRY RUN MODE ENABLED"
+    echo >&2 "DEBUG: Appending --dry-run to GIT_PUSH_ARGS."
+    GIT_PUSH_ARGS="$GIT_PUSH_ARGS --dry-run"
+fi
 
 if [ "$HAS_CHECKED_OUT" != "true" ]; then
     echo >&2 "WARNING: repo not checked out; attempting checkout"
