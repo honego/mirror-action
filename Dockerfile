@@ -1,6 +1,6 @@
-FROM alpine:3.23.2@sha256:865b95f46d98cf867a156fe4a135ad3fe50d2056aa3f25ed31662dff6da4eb62
+FROM alpine/git:2.52.0@sha256:b4ba5e95ee803a9f98fe9f4306e0105f679d2386dedaf207ffe62dd20fdd3f1c
 LABEL maintainer="honeok <i@honeok.com>"
 RUN set -ex \
-    && apk add --no-cache --update bash git
+    && apk add --no-cache --update bash
 COPY --chmod=755 *.sh /
 ENTRYPOINT ["/entrypoint.sh"]
