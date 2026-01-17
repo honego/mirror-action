@@ -1,12 +1,11 @@
 ---
-name: "release"
+name: "Release Tags"
 
 on:
   release:
     types: [published]
   push:
     tags: ["v*"]
-  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,16 +15,12 @@ permissions:
   contents: read
 
 jobs:
-  update-tags:
-    runs-on: ubuntu-latest
+  actions-tagger:
+    name: "Sync release tags"
+    runs-on: windows-latest
     permissions:
       contents: write
 
     steps:
-      - name: "Checkout repository"
-        uses: actions/checkout@v6
-
-      - name: "Update Major Tag"
-        uses: rickstaa/action-update-semver@v1
-        with:
-          tag: ${{ github.event.release.tag_name || github.ref_name }}
+      - name: "Sync latest tag"
+        uses: Actions-R-Us/actions-tagger@v2
