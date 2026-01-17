@@ -1,5 +1,5 @@
 ---
-name: "Release Tags"
+name: "CI"
 
 on:
   release:
@@ -15,22 +15,33 @@ permissions:
   contents: read
 
 jobs:
-  actions-tagger:
-    name: "Sync release tags"
-    runs-on: windows-latest
+  build:
+    runs-on: ubuntu-latest
     permissions:
       contents: write
 
     steps:
       - name: "Checkout repository"
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: "Build Changelog"
+        if: github.event_name == 'release' || contains(github.ref, 'refs/tags/')
+        uses: mikepenz/release-changelog-builder-action@v6
+        id: changelog
+        with:
+          configuration: ".github/configuration.json"
+          mode: "HYBRID"
 
       - name: "Upload release"
+        if: github.event_name == 'release' || contains(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         env:
           GH_TOKEN: ${{ github.token }}
         with:
-          generate_release_notes: true
+          body: ${{ steps.changelog.outputs.changelog }}
 
       - name: "Sync latest tag"
+        if: github.event_name == 'release' || contains(github.ref, 'refs/tags/')
         uses: Actions-R-Us/actions-tagger@v2
