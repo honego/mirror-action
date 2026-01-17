@@ -3,11 +3,6 @@
 
 set -eE
 
-if [ "$DEBUG" = "true" ]; then
-    env
-    set -x
-fi
-
 # Trust the workspace
 git config --global --add safe.directory "$GITHUB_WORKSPACE"
 
@@ -22,7 +17,13 @@ GIT_PUSH_ARGS="${INPUT_GIT_PUSH_ARGS:-"--tags --force --prune"}"
 GIT_SSH_NO_VERIFY_HOST="$INPUT_GIT_SSH_NO_VERIFY_HOST"
 GIT_SSH_KNOWN_HOSTS="$INPUT_GIT_SSH_KNOWN_HOSTS"
 HAS_CHECKED_OUT="$(git rev-parse --is-inside-work-tree 2> /dev/null || true)"
+DEBUG="${INPUT_DEBUG:-${DEBUG:-"false"}}"
 DRY_RUN="$INPUT_DRY_RUN"
+
+if [ "$DEBUG" = "true" ]; then
+    env
+    set -x
+fi
 
 if [ "$DRY_RUN" = "true" ]; then
     echo >&2 "DEBUG: DRY RUN MODE ENABLED"
