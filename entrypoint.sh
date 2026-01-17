@@ -21,8 +21,9 @@ DEBUG="${INPUT_DEBUG:-${DEBUG:-"false"}}"
 DRY_RUN="$INPUT_DRY_RUN"
 
 if [ "$DEBUG" = "true" ]; then
-    env
     set -x
+    echo >&2 "DEBUG: Environment Variables:"
+    env
 fi
 
 if [ "$DRY_RUN" = "true" ]; then
